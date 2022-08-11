@@ -25,12 +25,12 @@ exports.loginUser = asyncHandler(async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const user = await User.findOne({ email: email });
-  const comparepassword = bcrypt.compare(password, user.password);
-  if (comparepassword !== user.password) {
-    throw new Error('please input correct  password');
+  const comparePassword = bcrypt.compare(password, user.password);
+  if (!user && !comparePassword) {
+    throw new Error('invalid data');
   }
   res.status(200).json({
-    token: jwtGeneration,
+    token: jwtGeneration(user._id),
     user: user.id,
     email: user.email,
   });

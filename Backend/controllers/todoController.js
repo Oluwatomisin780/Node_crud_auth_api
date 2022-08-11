@@ -8,6 +8,7 @@ exports.getTask = asyncHandler(async (req, res, next) => {
 
 exports.createTask = asyncHandler(async (req, res, next) => {
   const todo = req.body.todo;
+
   const tasks = new Todo({
     todo: todo,
     user: req.user.id,
@@ -26,7 +27,7 @@ exports.updateTask = asyncHandler(async (req, res, next) => {
   if (!req.user) {
     throw new Error('not authenticated');
   }
-  if (req.user.id !== goal.user.toString()) {
+  if (req.user.id !== task.user.toString()) {
     throw new Error('user not authorized');
   }
   const updateTask = await Todo.findByIdAndUpdate(taskId, req.body, {
@@ -49,7 +50,7 @@ exports.deleteTask = asyncHandler(async (req, res, next) => {
     res.status(400);
     throw new Error('not authenticated');
   }
-  if (req.user.id !== goal.user.toString()) {
+  if (task.user.toString() !== req.user.id) {
     throw new Error('user not authorized');
   }
   await Todo.deleteOne(task);

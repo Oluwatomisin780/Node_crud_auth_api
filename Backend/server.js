@@ -5,7 +5,6 @@ const userRoutes = require('./routes/userRoute');
 const dbConnect = require('./config/database');
 const { errorHandler } = require('./middleware/errorHandler');
 const bodyParser = require('body-parser');
-const { toEditorSettings } = require('typescript');
 const app = express();
 const port = 8000 || process.env.PORT;
 app.use(bodyParser.json());

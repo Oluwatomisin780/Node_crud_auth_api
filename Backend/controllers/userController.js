@@ -2,6 +2,10 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
+const nodeMailer = require('nodemailer');
+
+const user = require('../models/user');
+const { use } = require('../routes/todoRoutes');
 //@register user
 exports.registerUser = asyncHandler(async (req, res, next) => {
   const name = req.body.name;
@@ -13,9 +17,31 @@ exports.registerUser = asyncHandler(async (req, res, next) => {
     password: hashedPassowrd,
     email: email,
   });
+  const transporter = nodeMailer.createTransport({
+    host: 'smtp.gmail.com',
+    auth: {
+      user: 'tomisinoyediran@gmail.com',
+      pass: 'cyjlexvxdnisxnkx',
+    },
+  });
+
+  const mailOptions = {
+    from: 'tomisinoyediran@gmail.com',
+    to: user.email,
+    subject: 'Registeration',
+    text: 'Registeration completed',
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
   const userDetail = await user.save();
   res.status(200).json(userDetail);
 });
+
 //@jwt generation
 const jwtGeneration = (id) => {
   return jwt.sign({ id }, process.env.JWT_TOKEN, { expiresIn: '1hr' });
